@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <math.h>
+
+#define BASE 10
+
+void radixSort(int *array, int size) {
+    int i, j;
+    int semiSorted[size];
+    int significantDigit = 1;
+    int largestNum = array[0];
+    
+    
+    for (i = 1; i < size; i++) {
+        if (array[i] > largestNum) {
+            largestNum = array[i];
+        }
+    }
+    
+    
+    while (largestNum / significantDigit > 0) {
+        int bucket[BASE] = { 0 };
+        
+        for (i = 0; i < size; i++) {
+            bucket[(array[i] / significantDigit) % BASE]++;
+        }
+        
+        for (i = 1; i < BASE; i++) {
+            bucket[i] += bucket[i - 1];
+        }
+        
+        for (i = size - 1; i >= 0; i--) {
+            semiSorted[--bucket[(array[i] / significantDigit) % BASE]] = array[i];
+        }
+        
+        for (i = 0; i < size; i++) {
+            array[i] = semiSorted[i];
+        }
+        
+        significantDigit *= BASE;
+    }
+}
+
+int main() {
+    int i, size;
+    
+    printf("Enter the number of elements: ");
+    scanf("%d", &size);
+    
+    int array[size];
+    
+    printf("Enter %d integers: ", size);
+    for (i = 0; i < size; i++) {
+        scanf("%d", &array[i]);
+    }
+    
+    radixSort(array, size);
+    
+    printf("Sorted array: ");
+    for (i = 0; i < size; i++) {
+        printf("%d ", array[i]);
+    }
+    
+    return 0;
+}
